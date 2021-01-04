@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Youtube_DL</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <StartupObject>Youtube_DL.App</StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Icon" />
+    <None Remove="Icon.ico" />
+    <None Remove="Resources\Add.png" />
+    <None Remove="Resources\Download.png" />
+    <None Remove="Resources\Extract Audio.png" />
+    <None Remove="Resources\New.png" />
+    <None Remove="Resources\Ok.png" />
+    <None Remove="Resources\Open.png" />
+    <None Remove="Resources\Remove.png" />
+    <None Remove="Resources\Save.png" />
+    <None Remove="Resources\Stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icon.ico" />
+    <Resource Include="Resources\Add.png" />
+    <Resource Include="Resources\Download.png" />
+    <Resource Include="Resources\Extract Audio.png" />
+    <Resource Include="Resources\New.png" />
+    <Resource Include="Resources\Ok.png" />
+    <Resource Include="Resources\Open.png" />
+    <Resource Include="Resources\Remove.png" />
+    <Resource Include="Resources\Save.png" />
+    <Resource Include="Resources\Stop.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

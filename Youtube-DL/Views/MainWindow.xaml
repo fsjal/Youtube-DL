@@ -1,0 +1,209 @@
+﻿<RibbonWindow 
+    x:Class="Youtube_DL.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModels="clr-namespace:Youtube_DL.ViewModels"
+    xmlns:Converters="clr-namespace:Youtube_DL.Converters"
+    xmlns:Behaviors="clr-namespace:Youtube_DL.Behaviors"
+    mc:Ignorable="d"
+    Height="800"
+    Width="1200"
+    MinHeight="400"
+    MinWidth="1200"
+    Title="Youtube-DL"
+    Icon="/Icon.ico">
+    <RibbonWindow.Resources>
+        <ViewModels:MainViewModel x:Key="MainViewModel" />
+        <Converters:DownloadImageConverter x:Key="DownloadImageConverter" />
+    </RibbonWindow.Resources>
+    <RibbonWindow.DataContext>
+        <StaticResource ResourceKey="MainViewModel" />
+    </RibbonWindow.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Ribbon
+            Grid.Row="0"
+            Background="White">
+            <Ribbon.Resources>
+                <Style TargetType="Ribbon">
+                    <Setter Property="TitleTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <TextBlock 
+                                    Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Foreground="LightGray" />
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Ribbon.Resources>
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed" />
+            </Ribbon.ApplicationMenu>
+            <RibbonTab
+                Header="Home"
+                KeyTip="F1">
+                <RibbonGroup Header="File">
+                    <RibbonButton 
+                        Label="New" 
+                        KeyTip="N"
+                        Command="{Binding NewCommand}"
+                        LargeImageSource="/Resources/New.png" Width="40"/>
+                   <!-- <RibbonComboBox SelectionBoxWidth="20"></RibbonComboBox>
+                    <RibbonTextBox MaxLength="5" TextBoxWidth="50"></RibbonTextBox> -->
+                    <RibbonButton 
+                        Label="Open"
+                        KeyTip="O"
+                        Command="{Binding OpenCommand}"
+                        SmallImageSource="/Resources/Open.png"/>
+                    <RibbonButton 
+                        Label="Save" 
+                        KeyTip="S"
+                        Command="{Binding SaveCommand}"
+                        SmallImageSource="/Resources/Save.png"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Edit">
+                    <RibbonButton
+                        Label="Add"
+                        Command="{Binding AddCommand}"
+                        IsDefault="True"
+                        LargeImageSource="/Resources/Add.png"
+                        KeyTip="A" />
+                    <RibbonButton
+                        Label="Remove"
+                        Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding SelectedItems, ElementName=LinksList}"
+                        LargeImageSource="/Resources/Remove.png"
+                        KeyTip="R"/>
+                </RibbonGroup>
+                <RibbonGroup Header="Action">
+                    <RibbonButton   
+                        KeyTip="D"
+                        Label="{Binding DownloadContent}"
+                        Command="{Binding DownloadCommand}" 
+                        LargeImageSource="{Binding DownloadImage, Converter={StaticResource DownloadImageConverter}}"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab
+                Header="Option"
+                KeyTip="F2">
+                <RibbonGroup Header="Media">
+                    <RibbonToggleButton
+                        Label="Extract Audio"
+                        KeyTip="X"
+                        IsChecked="{Binding ExtractAudioAll}"
+                        Command="{Binding ExtractAudioCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource self}, Path=IsChecked}"
+                        LargeImageSource="/Resources/Extract Audio.png"/>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+
+        <ListView 
+            Grid.Row="1"
+            ItemsSource="{Binding Links}"
+            SelectionMode="Multiple"
+            SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}"
+            AlternationCount="2"
+            x:Name="LinksList">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn 
+                        Header="Name" 
+                        Width="600">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Width="600" 
+                                    Text="{Binding Name}"
+                                    Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}}">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem 
+                                                Header="Copy Link"
+                                                Command="{Binding CopyLinkCommand, Source={StaticResource MainViewModel}}"
+                                                CommandParameter="{Binding Url}"/>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn 
+                        Header="Extract Audio"
+                        Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid Width="100">
+                                    <CheckBox 
+                                        IsChecked="{Binding ExtractAudio, Mode=TwoWay}" 
+                                        Command="{Binding DataContext.ExtractAudioItemCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                        HorizontalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn 
+                        Header="Size" 
+                        DisplayMemberBinding="{Binding Size}"
+                        Width="100" />
+                    <GridViewColumn 
+                        Header="Speed"
+                        DisplayMemberBinding="{Binding Speed}"
+                        Width="100" />
+                    <GridViewColumn
+                        Header="ETA" 
+                        DisplayMemberBinding="{Binding Eta}"
+                        Width="100" />
+                    <GridViewColumn 
+                        Header="Progress" 
+                        Width="170">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ProgressBar
+                                        Value="{Binding Progress}"
+                                        Width="150" />
+                                    <TextBlock
+                                        Text="{Binding Progress,
+                                        StringFormat=\{0\}%}"
+                                        HorizontalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}">
+                    <Style.Triggers>
+                        <Trigger 
+                            Property="ListBox.AlternationIndex" 
+                            Value="1">
+                            <Setter 
+                                Property="Background" 
+                                Value="AliceBlue" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding LinkStatus}" Value="Failed">
+                            <Setter Property="Background" Value="#22FF0000" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LinkStatus}" Value="Finished">
+                            <Setter Property="Background" Value="#2200FF00" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter 
+                        Property="Behaviors:ListItemClickBehavior.Command"
+                        Value="{Binding ItemClickCommand, Source={StaticResource MainViewModel}}" />
+                    <Setter
+                        Property="Behaviors:ListItemClickBehavior.Link"
+                        Value="{Binding}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+    </Grid>
+</RibbonWindow>
